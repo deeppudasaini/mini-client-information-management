@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int        @id @default(autoincrement())
+  first_name String
+  last_name  String
+  username   String     @unique
+  password   String
+  role       Int
+  status     Boolean    @default(true)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  Facebook   Facebook[]
+  Client     Client[]
+}
+
+model Facebook {
+  id           Int      @id @default(autoincrement())
+  profile_name String
+  profile_url  String
+  user         User     @relation(fields: [user_id], references: [id])
+  user_id      Int
+  status       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  Client       Client[]
+}
+
+model Client {
+  id         Int    @id @default(autoincrement())
+  first_name String
+  last_name  String
+  imageUrl   String
+  profileUrl String
+  department String
+
+  facebook    Facebook @relation(fields: [facebook_id], references: [id])
+  facebook_id Int
+  user        User     @relation(fields: [user_id], references: [id])
+  user_id     Int
+  status      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
